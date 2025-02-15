@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Flags</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+        .flag {
+            width: 150px;
+            height: 100px;
+            margin: 10px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+        .credit {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Pixel Flags</h1>
+        <p>Free-to-use pixel flags for your projects (with credit!)</p>
+    </div>
+    <div class="container" id="flag-container">
+        <!-- Flags will be loaded here -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const flagContainer = document.getElementById("flag-container");
+
+            // Path to the folder containing flags
+            const flagsPath = 'https://tdrbot.github.io/flags/'; // Update this if you use a different path
+
+            // Function to load the flags dynamically
+            function loadFlags() {
+                fetch(flagsPath)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const flagImages = doc.querySelectorAll('a[href$=".png"], a[href$=".jpg"], a[href$=".jpeg"]');
+
+                        flagImages.forEach(flagImage => {
+                            const flagPath = flagsPath + flagImage.getAttribute('href');
+                            const flagElement = document.createElement("img");
+                            flagElement.src = flagPath;
+                            flagElement.alt = flagImage.getAttribute('href');
+                            flagElement.classList.add('flag');
+                            flagContainer.appendChild(flagElement);
+
+                            const credit = document.createElement('p');
+                            credit.classList.add('credit');
+                            credit.textContent = 'Credit: Artist name or link';
+                            flagContainer.appendChild(credit);
+                        });
+                    })
+                    .catch(error => console.error('Error loading flags:', error));
+            }
+
+            loadFlags();
+        });
+    </script>
+</body>
+</html>
